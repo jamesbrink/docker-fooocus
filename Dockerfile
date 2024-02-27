@@ -29,6 +29,10 @@ RUN set -xe; \
 # Copy our entrypoint into the container.
 COPY ./runtime-assets /
 
+# Ensure entrypoint is executable
+RUN set -xe; \
+    chmod 0755 /usr/local/bin/entrypoint.sh
+
 ARG VCS_REF
 ARG BUILD_DATE
 

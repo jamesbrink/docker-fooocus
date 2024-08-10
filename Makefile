@@ -8,7 +8,7 @@ IMAGE_NAME              ?= fooocus
 CUDA_VERSION            ?= $(shell nvcc --version | grep "release" | awk '{print $$6}' | cut -d',' -f1 | sed 's/V//;s/..$$//')
 BASE_IMAGE              ?= nvidia/cuda:$(CUDA_VERSION)-runtime-ubuntu22.04
 SED                     := $(shell [[ `command -v gsed` ]] && echo gsed || echo sed)
-VERSION                 := 2.2.0-rc1
+VERSION                 := v2.5.3
 VCS_REF                 := $(shell git rev-parse --short HEAD 2>/dev/null || echo "0000000")
 BUILD_DATE              := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 

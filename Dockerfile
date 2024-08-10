@@ -19,7 +19,7 @@ RUN set -xe; \
     useradd -g 1000 -r -d /Fooocus -s /bin/sh -G fooocus fooocus;
 
 # Setup Fooocus
-ARG VERSION=2.2.0-rc1
+ARG VERSION=v2.5.3
 RUN set -xe; \
     git clone --branch ${VERSION} --depth 1 https://github.com/lllyasviel/Fooocus.git /fooocus; \
     cd /fooocus; \

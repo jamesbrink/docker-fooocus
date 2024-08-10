@@ -24,7 +24,7 @@ RUN set -xe; \
     git clone --branch ${VERSION} --depth 1 https://github.com/lllyasviel/Fooocus.git /fooocus; \
     cd /fooocus; \
     pip install --no-cache-dir -r requirements_versions.txt; \
-    chown -R fooocus:fooocus /fooocus
+    chown -R fooocus:fooocus /Fooocus
 
 # Copy our entrypoint into the container.
 COPY ./runtime-assets /
@@ -54,7 +54,7 @@ ENV \
 
 # Drop down to our unprivileged user.
 USER fooocus
-WORKDIR /fooocus
+WORKDIR /Fooocus
 
 # Expose our ports
 EXPOSE 7865

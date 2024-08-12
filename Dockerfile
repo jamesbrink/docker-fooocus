@@ -1,37 +1,41 @@
-ARG BASE_IMAGE=nvidia/cuda:12.3.1-runtime-ubuntu22.04
+ARG BASE_IMAGE=nvidia/cuda:12.2.2-runtime-ubuntu22.04
 FROM ${BASE_IMAGE}
 
 # Install deps
 RUN set -xe; \
     apt update && apt install -y \
+        curl \
         git \
+        iproute2 \
         libgl1-mesa-glx \
         libglib2.0-0 \
         python-is-python3 \
         python3 \
-        python3-pip; \
+        python3-pip \
+        rsync \
+        wget; \
     rm -rf /var/lib/apt/lists/*; \
     rm -rf /var/cache/apt;
 
-# Create our group & user.
+# Create our user
 RUN set -xe; \
-    groupadd -g 1000 -r fooocus; \
-    useradd -g 1000 -r -d /Fooocus -s /bin/sh -G fooocus fooocus;
+    useradd -u 1000 -g 100 -r -d /fooocus -s /bin/sh fooocus; \
+    mkdir -p /fooocus;
 
 # Setup Fooocus
 ARG VERSION=v2.5.3
 RUN set -xe; \
-    git clone --branch ${VERSION} --depth 1 https://github.com/lllyasviel/Fooocus.git /fooocus; \
+    git clone --branch ${VERSION} --depth 1 https://github.com/lllyasviel/fooocus.git /fooocus; \
     cd /fooocus; \
-    pip install --no-cache-dir -r requirements_versions.txt; \
-    chown -R fooocus:fooocus /Fooocus
+    pip install --no-cache-dir -r requirements_versions.txt;
 
 # Copy our entrypoint into the container.
 COPY ./runtime-assets /
 
 # Ensure entrypoint is executable
 RUN set -xe; \
-    chmod 0755 /usr/local/bin/entrypoint.sh
+    chmod 0755 /usr/local/bin/entrypoint.sh; \
+    chown -R fooocus:users /fooocus;
 
 ARG VCS_REF
 ARG BUILD_DATE
@@ -54,7 +58,7 @@ ENV \
 
 # Drop down to our unprivileged user.
 USER fooocus
-WORKDIR /Fooocus
+WORKDIR /fooocus
 
 # Expose our ports
 EXPOSE 7865
@@ -66,4 +70,4 @@ VOLUME [ "/fooocus/models", "/fooocus/outputs" ]
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 # Set the default command
-CMD ["python", "entry_with_update.py","--listen","--preset","realistic"]
+CMD [ "--listen", "--preset", "realistic" ]

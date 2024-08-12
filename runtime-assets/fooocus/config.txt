@@ -1,0 +1,26 @@
+{
+    "path_checkpoints": [
+        "/fooocus/models/checkpoints"
+    ],
+    "path_loras": [
+        "/fooocus/models/loras"
+    ],
+    "path_embeddings": "/fooocus/models/embeddings",
+    "path_vae_approx": "/fooocus/models/vae_approx",
+    "path_vae": "/fooocus/models/vae",
+    "path_upscale_models": "/fooocus/models/upscale_models",
+    "path_inpaint": "/fooocus/models/inpaint",
+    "path_controlnet": "/fooocus/models/controlnet",
+    "path_clip_vision": "/fooocus/models/clip_vision",
+    "path_fooocus_expansion": "/fooocus/models/prompt_expansion/fooocus_expansion",
+    "path_wildcards": "/fooocus/wildcards",
+    "path_safety_checker": "/fooocus/models/safety_checker",
+    "path_sam": "/fooocus/models/sam",
+    "path_outputs": "/fooocus/outputs",
+    "default_save_metadata_to_images": true,
+    "default_metadata_scheme": "fooocus",
+    "default_advanced_checkbox": true,
+    "default_developer_debug_mode_checkbox": true,
+    "default_max_image_number": 1000,
+    "default_aspect_ratio": "768*1344"
+}

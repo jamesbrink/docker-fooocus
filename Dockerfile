@@ -26,8 +26,11 @@ RUN set -xe; \
 ARG VERSION=v2.5.3
 RUN set -xe; \
     git clone --branch ${VERSION} --depth 1 https://github.com/lllyasviel/fooocus.git /fooocus; \
+    mkdir -p /fooocus/outputs; \
     cd /fooocus; \
-    pip install --no-cache-dir -r requirements_versions.txt;
+    pip install --no-cache-dir -r requirements_versions.txt; \
+    cp -rvp /fooocus/models /fooocus/fresh_models;
+
 
 # Copy our entrypoint into the container.
 COPY ./runtime-assets /

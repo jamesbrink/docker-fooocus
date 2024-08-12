@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Ensure Fooocus is synced to the volume.
+rsync -avP --update /fooocus/fresh_models/ /fooucus/models/
+
 # Simple helpers to make an easy clickable link on console.
 export LOCAL_ADDRESS="$(ip route get 1 | awk '{print $(NF-2);exit}')"
 export PUBLIC_ADDRESS="$(curl ipinfo.io/ip)"

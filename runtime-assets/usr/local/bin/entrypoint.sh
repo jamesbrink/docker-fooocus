@@ -3,6 +3,9 @@
 # Ensure Fooocus is synced to the volume.
 rsync -avP --update /fooocus/fresh_models/ /fooocus/models/
 
+# Ensure proper ownership (mostly for volumes)
+sudo chown -R fooocus:users /fooocus
+
 # Simple helpers to make an easy clickable link on console.
 export LOCAL_ADDRESS="$(ip route get 1 | awk '{print $(NF-2);exit}')"
 export PUBLIC_ADDRESS="$(curl ipinfo.io/ip)"

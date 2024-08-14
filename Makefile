@@ -8,9 +8,7 @@ IMAGE_NAME              ?= fooocus
 CUDA_VERSION            ?= 12.2.2
 BASE_IMAGE              ?= nvidia/cuda:$(CUDA_VERSION)-runtime-ubuntu22.04
 SED                     := $(shell [[ `command -v gsed` ]] && echo gsed || echo sed)
-VERSION                 := v2.5.3
-VCS_REF                 := $(shell git rev-parse --short HEAD 2>/dev/null || echo "0000000")
-BUILD_DATE              := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
+VERSION                 := v2.5.5
 
 # Default target is to build container
 .PHONY: default
@@ -22,10 +20,8 @@ build: list
 	docker build \
 		--build-arg BASE_IMAGE=$(BASE_IMAGE) \
 		--build-arg BUILD_DATE=$(BUILD_DATE) \
-		--build-arg VCS_REF=$(VCS_REF) \
 		--build-arg VERSION=$(VERSION) \
 		--tag $(REPO_NAMESPACE)/$(IMAGE_NAME):latest \
-		--tag $(REPO_NAMESPACE)/$(IMAGE_NAME):$(VCS_REF) \
 		--tag $(REPO_NAMESPACE)/$(IMAGE_NAME):$(VERSION) \
 		--file Dockerfile .
 
@@ -43,7 +39,6 @@ test:
 .PHONY: push
 push:
 	docker push  $(REPO_NAMESPACE)/$(IMAGE_NAME):latest; \
-	docker push  $(REPO_NAMESPACE)/$(IMAGE_NAME):$(VCS_REF); \
 	docker push  $(REPO_NAMESPACE)/$(IMAGE_NAME):$(VERSION);
 
 # Remove existing images

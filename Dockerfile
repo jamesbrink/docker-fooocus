@@ -1,10 +1,12 @@
 ARG BASE_IMAGE=nvidia/cuda:12.2.2-runtime-ubuntu22.04
-FROM ${BASE_IMAGE}
+FROM ${BASE_IMAGE} AS base
 
 # Install deps
 RUN set -xe; \
     apt update && apt install -y \
+        bash-completion \
         curl \
+        ffmpeg \
         git \
         iproute2 \
         libgl1-mesa-glx \
@@ -13,21 +15,27 @@ RUN set -xe; \
         python3 \
         python3-pip \
         rsync \
+        sudo \
+        vim \
         wget; \
+    apt clean; \
     rm -rf /var/lib/apt/lists/*; \
     rm -rf /var/cache/apt;
 
 # Create our user
 RUN set -xe; \
-    useradd -u 1000 -g 100 -r -d /fooocus -s /bin/sh fooocus; \
+    useradd -u 1000 -g 100 -G sudo -r -d /fooocus -s /bin/sh fooocus; \
+    echo "fooocus ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers; \
     mkdir -p /fooocus;
 
 # Setup Fooocus
-ARG VERSION=v2.5.3
+ARG VERSION=v2.5.5
 RUN set -xe; \
-    git clone --branch ${VERSION} --depth 1 https://github.com/lllyasviel/fooocus.git /fooocus; \
+    git clone https://github.com/lllyasviel/fooocus.git /fooocus; \
     mkdir -p /fooocus/outputs; \
     cd /fooocus; \
+    git fetch --all --tags; \
+    git checkout ${VERSION}; \
     pip install --no-cache-dir -r requirements_versions.txt; \
     cp -rvp /fooocus/models /fooocus/fresh_models;
 
@@ -40,15 +48,10 @@ RUN set -xe; \
     chmod 0755 /usr/local/bin/entrypoint.sh; \
     chown -R fooocus:users /fooocus;
 
-ARG VCS_REF
-ARG BUILD_DATE
-
 # Labels / Metadata.
 LABEL \
     org.opencontainers.image.authors="James Brink <brink.james@gmail.com>" \
-    org.opencontainers.image.created="${BUILD_DATE}" \
     org.opencontainers.image.description="Fooocus Interface for Stable Diffusion" \
-    org.opencontainers.image.revision="${VCS_REF}" \
     org.opencontainers.image.source="https://github.com/jamesbrink/fooocus" \
     org.opencontainers.image.title="fooocus" \
     org.opencontainers.image.vendor="jamesbrink" \
@@ -56,12 +59,22 @@ LABEL \
 
 # Setup our environment variables.
 ENV \
+    HOME="/fooocus" \
     PATH="/usr/local/bin:$PATH" \
     VERSION="${VERSION}"
 
 # Drop down to our unprivileged user.
 USER fooocus
 WORKDIR /fooocus
+
+# Setup git
+RUN set -xe; \
+    git config --global user.name "Fooocus"; \
+    git config --global user.email "Fooocus@urandom.io"; \
+    git config --global init.defaultBranch main; \
+    git config --global core.editor "vim"; \
+    git config --global --add safe.directory /comfyui; \
+    git config --global --add safe.directory /comfyui/custom_nodes/ComfyUI-Manager;
 
 # Expose our ports
 EXPOSE 7865

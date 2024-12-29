@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=nvidia/cuda:12.2.2-runtime-ubuntu22.04
+ARG BASE_IMAGE=nvidia/cuda:12.6.3-runtime-ubuntu22.04
 FROM ${BASE_IMAGE} AS base
 
 # Install deps

@@ -1,4 +1,4 @@
-# Fooocus
+# Docker image for Fooocus (Stable Diffusion)
 
 ## About
 
